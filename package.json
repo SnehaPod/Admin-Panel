@@ -6,7 +6,6 @@
     "start": "node server.js",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
-  "proxy": "http://0.0.0.0:8085",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "core-js": "^3.6.5",

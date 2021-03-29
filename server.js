@@ -197,6 +197,6 @@ app.use('*', function (req, res, next) {
     }
 })
 
-const port = process.env.APP_PORT || 8085;
+const port = process.env.PORT || 8085;
 app.listen(port);
 console.log(`app is listening on port: ${port}`);

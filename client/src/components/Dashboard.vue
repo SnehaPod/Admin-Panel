@@ -172,7 +172,7 @@ export default {
   methods: {
     getUsers: function () {
       axios
-        .get("http://0.0.0.0:8085/api/users", {
+        .get(`http://0.0.0.0:${process.env.PORT}/api/users`, {
           headers: {
             Authorization: "JWT " + localStorage.getItem("token"),
           },
