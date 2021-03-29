@@ -10,7 +10,7 @@ var userInst = new User;
 
 const app = express();
 
-mongoose.connect(process.env.MONGO_URI, (err, connected) => {
+mongoose.connect(process.env.APP_MONGO_URI, (err, connected) => {
     if (err) {
         
     } else {
@@ -125,9 +125,9 @@ app.post('/login', (req, res) => {
                         var userDataObj = userData.toObject();
                         delete userDataObj.password;
                         console.log(`userData`, userDataObj)
-                        var token = jwt.sign(userDataObj, process.env.JWT_SECRET);
+                        var token = jwt.sign(userDataObj, process.env.APP_JWT_SECRET);
 
-                        // userData.token = jwt.sign(userDataObj, (process.env.JWT_SECRET || 'secret#019283$'));
+                        // userData.token = jwt.sign(userDataObj, (process.env.APP_JWT_SECRET || 'secret#019283$'));
                         // userData.save();
 
                         res.json({
@@ -173,7 +173,7 @@ app.use('*', function (req, res, next) {
         if (req.headers && req.headers.authorization) {
             try {
                 var token = req.headers.authorization.split(" ")[1],
-                    emailFromToken = jwt.verify(token, process.env.JWT_SECRET).email;
+                    emailFromToken = jwt.verify(token, process.env.APP_JWT_SECRET).email;
                 if (emailFromToken) {
                     User.find({ email: emailFromToken }).then(user => {
                         if (user && user._id) {
