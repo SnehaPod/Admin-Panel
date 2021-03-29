@@ -10,10 +10,6 @@ var userInst = new User;
 
 const app = express();
 
-
-process.env.JWT_SECRET = "secret#019283$";
-process.env.MONGO_URI = "mongodb+srv://basecampuser:basecamp101@cluster0.skpjt.mongodb.net/basecamp";
-
 mongoose.connect(process.env.MONGO_URI, (err, connected) => {
     if (err) {
         
