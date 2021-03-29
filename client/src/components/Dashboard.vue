@@ -213,7 +213,7 @@ export default {
     onSubmit: function (e) {
       e.preventDefault();
       axios
-        .post("http://0.0.0.0:8085/api/adduser", this.form, {
+        .post(`http://0.0.0.0:${process.env.PORT}/api/adduser`, this.form, {
           headers: {
             "Content-type": "application/json",
             Authorization: "JWT " + localStorage.getItem("token"),
