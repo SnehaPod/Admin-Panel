@@ -10,6 +10,8 @@ var userInst = new User;
 
 const app = express();
 
+console.log(`process.env.APP_MONGO_URI`, process.env.APP_MONGO_URI);
+console.log(`process.env.APP_JWT_SECRET`, process.env.APP_JWT_SECRET)
 mongoose.connect(process.env.APP_MONGO_URI, (err, connected) => {
     if (err) {
         
