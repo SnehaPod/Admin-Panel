@@ -172,7 +172,7 @@ export default {
   methods: {
     getUsers: function () {
       axios
-        .get("http://localhost:8085/api/users", {
+        .get("http://0.0.0.0:8085/api/users", {
           headers: {
             Authorization: "JWT " + localStorage.getItem("token"),
           },
@@ -213,7 +213,7 @@ export default {
     onSubmit: function (e) {
       e.preventDefault();
       axios
-        .post("http://localhost:8085/api/adduser", this.form, {
+        .post("http://0.0.0.0:8085/api/adduser", this.form, {
           headers: {
             "Content-type": "application/json",
             Authorization: "JWT " + localStorage.getItem("token"),

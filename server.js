@@ -11,7 +11,7 @@ var userInst = new User;
 const app = express();
 
 console.log(`process.env.APP_MONGO_URI`, process.env.APP_MONGO_URI);
-console.log(`process.env.APP_JWT_SECRET`, process.env.APP_JWT_SECRET)
+console.log(`process.env.APP_JWT_SECRET`, process.env.APP_JWT_SECRET);
 mongoose.connect(process.env.APP_MONGO_URI, (err, connected) => {
     if (err) {
         
@@ -28,7 +28,7 @@ app.use(cors());
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
+    res.setHeader('Access-Control-Allow-Origin', 'http://0.0.0.0:8081');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
