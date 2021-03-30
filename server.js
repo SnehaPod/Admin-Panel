@@ -10,11 +10,9 @@ var userInst = new User;
 
 const app = express();
 
-console.log(`process.env.APP_MONGO_URI`, process.env.APP_MONGO_URI);
-console.log(`process.env.APP_JWT_SECRET`, process.env.APP_JWT_SECRET);
 mongoose.connect(process.env.APP_MONGO_URI, (err, connected) => {
     if (err) {
-        
+
     } else {
         console.log("Connected to Mongo DB successfully.. ");
     }
@@ -25,34 +23,62 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Add headers
-app.use(function (req, res, next) {
+// app.use(function (req, res, next) {
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://0.0.0.0:8081');
+//     // Website you wish to allow to connect
+//     res.setHeader('Access-Control-Allow-Origin', 'http://0.0.0.0:8081');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     // Request methods you wish to allow
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//     // Request headers you wish to allow
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+//     // Set to true if you need the website to include cookies in the requests sent
+//     // to the API (e.g. in case you use sessions)
+//     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Pass to next layer of middleware
-    next();
-});
+//     // Pass to next layer of middleware
+//     next();
+// });
+
+
+function validate(req, res, next) {
+    if (req.url.startsWith("/api")) {
+        if (req.headers && req.headers.authorization) {
+            try {
+                var token = req.headers.authorization.split(" ")[1],
+                    emailFromToken = jwt.verify(token, process.env.APP_JWT_SECRET).email;
+                if (emailFromToken) {
+                    User.find({ email: emailFromToken }).then(user => {
+                        if (user && user._id) {
+                            next();
+                        } else {
+                            next(new Error({ message: "Unauthorized" }));
+                        }
+                    })
+                }
+            }
+            catch (err) {
+                next(new Error({ message: "Unauthorized" }))
+            }
+        } else {
+            next(new Error({ message: 'Unauthorized' }))
+        }
+    } else {
+        next();
+    }
+}
 
 //here we are configuring dist to serve app files
 app.use('/', serveStatic(path.join(__dirname, 'client/dist')))
 
 // this * route is to serve project on different page routes except root `/`
 app.get(/.*/, function (req, res) {
-	res.sendFile(path.join(__dirname, '/client/dist/index.html'))
+    res.sendFile(path.join(__dirname, '/client/dist/index.html'))
 })
 
-app.post('/api/adduser', (req, res) => {
+app.post('/api/adduser', validate, (req, res) => {
     var { name, email, userName, password, userType, mentees } = req.body;
     var payload = {
         name,
@@ -157,7 +183,7 @@ app.post('/login', (req, res) => {
     })
 })
 
-app.get('/api/users', (req, res) => {
+app.get('/api/users', validate, (req, res) => {
     User.find({}, { "_id": 0, "name": 1, "mobile": 1, "email": 1, "userName": 1, "userType": 1, "mentees": 1 }).then(result => {
         console.log(`result`, result);
         res.json(result);
@@ -167,36 +193,6 @@ app.get('/api/users', (req, res) => {
         })
 })
 
-app.use('*', function (req, res, next) {
-    console.log("In middleware");
-    console.log(`req`, req)
-    console.log(`req.url`, req.url)
-    if (req.url.startsWith("/api")) {
-        if (req.headers && req.headers.authorization) {
-            try {
-                var token = req.headers.authorization.split(" ")[1],
-                    emailFromToken = jwt.verify(token, process.env.APP_JWT_SECRET).email;
-                if (emailFromToken) {
-                    User.find({ email: emailFromToken }).then(user => {
-                        if (user && user._id) {
-                            next();
-                        } else {
-                            next(new Error({ message: "Unauthorized" }));
-                        }
-                    })
-                }
-            }
-            catch (err) {
-                next(new Error({ message: "Unauthorized" }))
-            }
-        } else {
-            next(new Error({ message: 'Unauthorized' }))
-        }
-    } else {
-        next();
-    }
-})
-
 const port = process.env.PORT || 8085;
 app.listen(port);
-console.log(`app is listening on port: ${port}`);
+console.log(`App is listening on port: ${port}`);
