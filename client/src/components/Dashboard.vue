@@ -144,6 +144,7 @@
 
 <script>
 import axios from "axios";
+const BASE_API = process.env.NODE_ENV === 'production' ? 'https://admin-panel-vue.herokuapp.com/' : 'http://localhost:8085/';
 export default {
   name: "Dashboard",
   data() {
@@ -172,7 +173,8 @@ export default {
   methods: {
     getUsers: function () {
       axios
-        .get(`http://0.0.0.0:${process.env.PORT}/api/users`, {
+        // .get(`http://0.0.0.0:${process.env.PORT}/api/users`, {
+        .get(`${BASE_API}/api/users`, {
           headers: {
             Authorization: "JWT " + localStorage.getItem("token"),
           },
@@ -213,7 +215,8 @@ export default {
     onSubmit: function (e) {
       e.preventDefault();
       axios
-        .post(`http://0.0.0.0:${process.env.PORT}/api/adduser`, this.form, {
+        // .post(`http://0.0.0.0:${process.env.PORT}/api/adduser`, this.form, {
+        .post(`${BASE_API}/api/adduser`, this.form, {
           headers: {
             "Content-type": "application/json",
             Authorization: "JWT " + localStorage.getItem("token"),

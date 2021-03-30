@@ -51,6 +51,7 @@
 
 <script>
 import axios from "axios";
+const BASE_API = process.env.NODE_ENV === 'production' ? 'https://admin-panel-vue.herokuapp.com/' : 'http://localhost:8085/';
 export default {
   name: "Login",
   data() {
@@ -67,7 +68,8 @@ export default {
       e.preventDefault();
       console.log(this.form);
       if (this.form.email !== "" && this.form.password !== "") {
-        axios.post(`http://0.0.0.0:${process.env.PORT}/login`, this.form).then((result) => {
+        // axios.post(`http://0.0.0.0:${process.env.PORT}/login`, this.form).then((result) => {
+        axios.post(`${BASE_API}/login`, this.form).then((result) => {
           console.log(`result`, result);
           if (result.data.token) {
             localStorage.setItem("token", result.data.token);
